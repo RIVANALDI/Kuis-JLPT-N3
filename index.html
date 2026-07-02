@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Sinonim JLPT N3 - 35 Soal Lengkap</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Mengaktifkan fitur dark mode Tailwind via class
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; transition: background-color 0.3s; }
+        .fade-in { animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .option-btn { transition: all 0.2s ease-in-out; }
+        .option-btn:disabled { cursor: not-allowed; opacity: 0.9; }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen flex items-center justify-center p-4 transition-colors duration-300">
+
+    <div id="quiz-container" class="bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-2xl shadow-xl max-w-2xl w-full my-8 relative border border-gray-100 dark:border-gray-700 transition-colors duration-300">
+        
+        <!-- Theme Toggle Button -->
+        <div class="absolute top-4 right-4 sm:top-6 sm:right-6">
+            <button id="theme-toggle" class="p-2.5 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition flex items-center gap-1.5 text-xs font-semibold">
+                <span id="theme-toggle-icon">🌙</span> <span id="theme-toggle-text">Mode Gelap</span>
+            </button>
+        </div>
+
+        <!-- Header -->
+        <div class="mb-6 text-center pt-4">
+            <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Kuis Sinonim JLPT N3</h1>
+            <p class="text-gray-500 dark:text-gray-400 text-sm">Kuis Bunpou N3</p>
+            <div id="progress-bar" class="w-full bg-gray-200 dark:bg-gray-700 h-2 mt-4 rounded-full overflow-hidden">
+                <div id="progress-fill" class="bg-blue-500 h-full w-0 transition-all duration-300"></div>
+            </div>
+        </div>
+
+        <!-- Question Section -->
+        <div id="question-area" class="fade-in">
+            <div class="flex justify-between items-center mb-4">
+                <span id="question-number" class="text-sm font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide"></span>
+                <span id="status-tag" class="text-xs px-2 py-1 rounded font-medium"></span>
+            </div>
+            
+            <h2 id="question-text" class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-6 leading-relaxed"></h2>
+
+            <div id="options-container" class="grid gap-3.5">
+                <!-- Pilihan akan dimasukkan melalui JavaScript -->
+            </div>
+
+            <!-- Navigasi Utama (Sebelumnya / Lewati) -->
+            <div class="flex justify-between items-center gap-4 mt-6">
+                <button id="prev-btn" class="flex-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 py-3 rounded-xl font-semibold hover:bg-gray-200 dark:hover:bg-gray-600 transition border border-gray-300 dark:border-gray-600 disabled:opacity-40 disabled:cursor-not-allowed">
+                    ← Sebelumnya
+                </button>
+                <button id="skip-btn" class="flex-1 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 py-3 rounded-xl font-semibold hover:bg-amber-100 dark:hover:bg-amber-900/40 transition border border-amber-200 dark:border-amber-900/60">
+                    Lewati Soal ↷
+                </button>
+            </div>
+
+            <!-- Feedback Section -->
+            <div id="feedback-area" class="mt-6 p-4 rounded-lg bg-gray-50 dark:bg-gray-700/50 hidden border border-gray-200 dark:border-gray-600">
+                <h3 id="feedback-title" class="font-bold text-lg mb-2"></h3>
+                <p id="explanation-text" class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed mb-4"></p>
+                <button id="next-btn" class="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition shadow-md">
+                    Soal Berikutnya →
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Section -->
+        <div id="result-area" class="hidden text-center fade-in py-8">
+            <div class="text-6xl mb-4">🏆</div>
+            <h2 class="text-3xl font-bold text-gray-800 dark:text-white">Latihan Selesai!</h2>
+            <p class="text-xl text-gray-600 dark:text-gray-400 mt-4">Total Skor Anda:</p>
+            <p class="text-4xl font-bold text-blue-600 dark:text-blue-400 mt-2"><span id="final-score">0</span> / 35</p>
+            <p id="skipped-info" class="text-sm text-amber-600 dark:text-amber-400 mt-1 hidden"></p>
+            <p id="result-message" class="text-gray-500 dark:text-gray-400 mt-4 font-medium px-4"></p>
+            <button onclick="location.reload()" class="mt-8 bg-gray-800 dark:bg-gray-700 text-white dark:text-gray-100 px-8 py-3 rounded-xl font-semibold hover:bg-gray-700 dark:hover:bg-gray-600 transition shadow-md w-full sm:w-auto">
+                Coba Lagi
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            { question: "昨日見た映画は「退屈」だった。", options: ["面白かった", "短かった", "つまらなかった", "長かった"], correct: 2, explanation: "「退屈 (Taikutsu)」 = つまらない (Tsumaranai) / Membosankan." },
+            { question: "展示物に「触れない」でください。", options: ["見ない", "さわらない", "乗らない", "壊さない"], correct: 1, explanation: "「触れる (Fureru)」 = さわる (Sawaru) / Menyentuh." },
+            { question: "それはとてもいい「機会」だと思います。", options: ["道具", "チャンス", "機械", "時間"], correct: 1, explanation: "「機会 (Kikai)」 = チャンス (Chance) / Kesempatan." },
+            { question: "この仕事はとても「きつい」。", options: ["大変だ", "簡単だ", "面白い", "つまらない"], correct: 0, explanation: "「きつい (Kitsui)」 = 大変 (Taihen) / Berat atau susah." },
+            { question: "その説明を聞いて「納得」した。", options: ["とてもよくわかった", "少し驚いた", "全然わからなかった", "あまり信じられなかった"], correct: 0, explanation: "「納得する (Nattoku suru)」 = よくわかる (Yoku wakaru) / Sangat mengerti atau menerima penjelasan." },
+            { question: "「普段」と同じようにしてください。", options: ["いつも", "たまに", "昔", "明日"], correct: 0, explanation: "「普段 (Fudan)」 = いつも (Itsumo) / Biasanya, selalu." },
+            { question: "あの人は少し「短気」だ。", options: ["すぐ怒る", "いつも笑う", "あまり話さない", "すぐ忘れる"], correct: 0, explanation: "「短気 (Tanki)」 = すぐ怒る (Sugu okoru) / Cepat marah, sumbu pendek." },
+            { question: "「グラウンド」に集まってください。", options: ["教室", "運動場", "体育館", "食堂"], correct: 1, explanation: "「グラウンド (Ground)」 = 運動場 (Undoujou) / Lapangan olahraga." },
+            { question: "彼は私の「甥」です。", options: ["姉の息子", "兄の娘", "弟の妻", "妹の夫"], correct: 0, explanation: "「甥 (Oi)」 = 姉／兄の息子 (Ane/Ani no musuko) / Keponakan laki-laki." },
+            { question: "もっと「詳しく」教えてください。", options: ["早く", "細かく", "熱心に", "簡単に"], correct: 1, explanation: "「詳しく (Kuwashiku)」 = 細かく (Komakaku) / Secara detail." },
+            { question: "もう少し時間を「与えよう」。", options: ["もらおう", "あげよう", "借りよう", "貸そう"], correct: 1, explanation: "「与える (Ataeru)」 = あげる (Ageru) / Memberikan (biasanya untuk hal abstrak seperti waktu)." },
+            { question: "ここは車が「ずいぶん」多い。", options: ["少し", "非常に", "だいたい", "絶対に"], correct: 1, explanation: "「ずいぶん (Zuibun)」 = 非常に (Hijou ni) / Sangat, amat banyak." },
+            { question: "「指定」された場所に置いてください。", options: ["決められた", "買ってきた", "借りた", "見つけた"], correct: 0, explanation: "「指定 (Shitei)」 = 決められた (Kimerareta) / Yang sudah ditentukan." },
+            { question: "明日の試験が「不安」だ。", options: ["楽しみ", "心配", "簡単", "嫌"], correct: 1, explanation: "「不安 (Fuan)」 = 心配 (Shinpai) / Khawatir atau cemas." },
+            { question: "明日の「スケジュール」を教えてください。", options: ["予定", "理由", "結果", "場所"], correct: 0, explanation: "「スケジュール (Schedule)」 = 予定 (Yotei) / Jadwal atau rencana." },
+            { question: "靴の「サイズ」が合わない。", options: ["色", "形", "大きさ", "値段"], correct: 2, explanation: "「サイズ (Size)」 = 大きさ (Ookisa) / Ukuran." },
+            { question: "この単語を「暗記」してください。", options: ["選んで", "使って", "覚えて", "書いて"], correct: 2, explanation: "「暗記 (Anki)」 = 覚える (Oboeru) / Menghafal." },
+            { question: "彼は料理が「得意」だ。", options: ["好きだ", "とても上手だ", "あまり上手じゃない", "嫌いだ"], correct: 1, explanation: "「得意 (Tokui)」 = とても上手 (Totemo jouzu) / Ahli atau jago." },
+            { question: "私は英語が「苦手」だ。", options: ["好きだ", "とても上手だ", "あまり上手じゃない", "得意だ"], correct: 2, explanation: "「苦手 (Nigate)」 = あまり上手じゃない (Amari jouzu janai) / Tidak pandai, kebalikan dari Tokui." },
+            { question: "誰にでも「欠点」はあるものだ。", options: ["いいところ", "間違っているところ", "よくないところ", "忘れたところ"], correct: 2, explanation: "「欠点 (Ketten)」 = よくないところ (Yokunai tokoro) / Kekurangan, titik lemah." },
+            { question: "「怒鳴らない」でください。", options: ["大声で怒らない", "泣かない", "走らない", "笑わない"], correct: 0, explanation: "「怒鳴る (Donaru)」 = 大声で怒る (Oogoe de okoru) / Membentak, marah dengan suara keras." },
+            { question: "地震が起きたら「避難」してください。", options: ["隠れて", "逃げて", "集まって", "座って"], correct: 1, explanation: "「避難 (Hinan)」 = 逃げる (Nigeru) / Mengungsi, melarikan diri." },
+            { question: "何かいい「案」はありませんか。", options: ["予定", "アイデア", "答え", "理由"], correct: 1, explanation: "「案 (An)」 = アイデア (Idea) / Usulan, ide, proposal." },
+            { question: "彼は会議中ずっと「黙っていた」。", options: ["話さなかった", "怒っていた", "泣いていた", "笑っていた"], correct: 0, explanation: "「黙る (Damaru)」 =話さない (Hanasapai) / Diam, tidak berbicara." },
+            { question: "これが「ベスト」な方法だ。", options: ["一番安い", "最も良い", "一番早い", "最も悪い"], correct: 1, explanation: "「ベスト (Best)」 = 最も良い (Mottomo yoi) / Yang terbaik." },
+            { question: "荷物を「配達」してもらった。", options: ["届けてくれた", "見つけてくれた", "買ってくれた", "預かってくれた"], correct: 0, explanation: "「配達 (Haitatsu) / 配る」 = 届ける (Todokeru) / Mengantarkan." },
+            { question: "この商品は「売り切れ」ました。", options: ["全部売れました", "安くなりました", "古くなりました", "なくなりました"], correct: 0, explanation: "「売り切れ (Urikire)」 = 全部売れました (Zenbu uremashita) / Habis terjual (Sold out)." },
+            { question: "次の「カーブ」を右に曲がってください。", options: ["信号", "曲gっているところ", "橋", "交差点"], correct: 1, explanation: "「カーブ (Curve)」 = 曲がっているところ (Magatte iru tokoro) / Belokan." },
+            { question: "「早速」始めましょう。", options: ["ゆっくり", "すぐに", "後で", "明日"], correct: 1, explanation: "「早速 (Sassoku)」 = すぐに (Sugu ni) / Segera, secepatnya." },
+            { question: "このズボンは少し「ゆるい」。", options: ["大きい", "小さい", "長い", "短い"], correct: 0, explanation: "「ゆるい (Yurui)」 = 大きい (Ookii) / Longgar (dalam konteks ukuran pakaian)." },
+            { question: "その件について「検討」します。", options: ["報告します", "よく考えます", "準備します", "質問します"], correct: 1, explanation: "「検討 (Kentou)」 = よく考える (Yoku kangaeru) / Mempertimbangkan." },
+            { question: "有名な「企業」に就職したい。", options: ["学校", "会社", "病院", "銀行"], correct: 1, explanation: "「企業 (Kigyou)」 = 会社 (Kaisha) / Perusahaan." },
+            { question: "車を「バック」させてください。", options: ["前に進めて", "止めて", "後ろに下がって", "回して"], correct: 2, explanation: "「バック (Back)」 = 後ろに下がる (Ushiro ni sagaru) / Mundur." },
+            { question: "彼は「一流」のシェフだ。", options: ["普通の", "素晴らしい", "新しい", "悪い"], correct: 1, explanation: "「一流 (Ichiryuu)」 = 素晴らしい (Subarashii) / Kelas atas, luar biasa, nomor satu." },
+            { question: "「ようやく」雨がやんだ。", options: ["急に", "やっと", "また", "すぐに"], correct: 1, explanation: "「ようやく (Youyaku)」 = やっと (Yatto) / ついに (Tsui ni) / Akhirnya." }
+        ];
+
+        let userAnswers = new Array(quizData.length).fill(null);
+        let currentQuestion = 0;
+
+        const questionArea = document.getElementById('question-area');
+        const questionText = document.getElementById('question-text');
+        const questionNumber = document.getElementById('question-number');
+        const statusTag = document.getElementById('status-tag');
+        const optionsContainer = document.getElementById('options-container');
+        const feedbackArea = document.getElementById('feedback-area');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const explanationText = document.getElementById('explanation-text');
+        const progressFill = document.getElementById('progress-fill');
+        
+        const prevBtn = document.getElementById('prev-btn');
+        const skipBtn = document.getElementById('skip-btn');
+        const nextBtn = document.getElementById('next-btn');
+        
+        const resultArea = document.getElementById('result-area');
+        const finalScore = document.getElementById('final-score');
+        const skippedInfo = document.getElementById('skipped-info');
+        const resultMessage = document.getElementById('result-message');
+
+        // Theme Toggle Logic
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeToggleIcon = document.getElementById('theme-toggle-icon');
+        const themeToggleText = document.getElementById('theme-toggle-text');
+
+        themeToggle.addEventListener('click', () => {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                themeToggleIcon.innerText = "🌙";
+                themeToggleText.innerText = "Mode Gelap";
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                themeToggleIcon.innerText = "☀️";
+                themeToggleText.innerText = "Mode Terang";
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        // Cek preferensi tema sebelumnya saat reload halaman
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            themeToggleIcon.innerText = "☀️";
+            themeToggleText.innerText = "Mode Terang";
+        }
+
+        function loadQuestion() {
+            const data = quizData[currentQuestion];
+            const hasAnswered = userAnswers[currentQuestion] !== null;
+            
+            questionNumber.innerText = `Soal ${currentQuestion + 1} dari ${quizData.length}`;
+            questionText.innerText = data.question;
+            optionsContainer.innerHTML = '';
+            
+            prevBtn.disabled = currentQuestion === 0;
+            
+            if (currentQuestion === quizData.length - 1) {
+                skipBtn.innerText = "Lihat Hasil 🏁";
+                skipBtn.className = "flex-1 bg-green-50 dark:bg-green-950/40 text-green-700 dark:text-green-400 py-3 rounded-xl font-semibold hover:bg-green-100 dark:hover:bg-green-900/40 transition border border-green-200 dark:border-green-900/60";
+            } else {
+                skipBtn.innerText = "Lewati Soal ↷";
+                skipBtn.className = "flex-1 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 py-3 rounded-xl font-semibold hover:bg-amber-100 dark:hover:bg-amber-900/40 transition border border-amber-200 dark:border-amber-900/60";
+            }
+
+            const answeredCount = userAnswers.filter(ans => ans !== null).length;
+            const progress = (answeredCount / quizData.length) * 100;
+            progressFill.style.width = `${progress}%`;
+
+            if (hasAnswered) {
+                statusTag.innerText = "Sudah Dijawab";
+                statusTag.className = "text-xs px-2 py-1 rounded font-medium bg-green-100 dark:bg-green-950/60 text-green-700 dark:text-green-400";
+            } else {
+                statusTag.innerText = "Belum Dijawab";
+                statusTag.className = "text-xs px-2 py-1 rounded font-medium bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400";
+            }
+
+            data.options.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full text-left p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-blue-500 dark:hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/30 font-medium text-gray-700 dark:text-gray-200 shadow-sm transition-colors";
+                btn.innerHTML = `<span class="inline-block w-8 font-bold text-gray-400 dark:text-gray-500">${index + 1}.</span> ${option}`;
+                
+                if (hasAnswered) {
+                    btn.disabled = true;
+                } else {
+                    btn.onclick = () => handleAnswer(index);
+                }
+                optionsContainer.appendChild(btn);
+            });
+
+            if (hasAnswered) {
+                showFeedback(userAnswers[currentQuestion]);
+                skipBtn.classList.add('hidden');
+            } else {
+                feedbackArea.classList.add('hidden');
+                skipBtn.classList.remove('hidden');
+            }
+        }
+
+        function handleAnswer(selectedIndex) {
+            userAnswers[currentQuestion] = selectedIndex;
+            skipBtn.classList.add('hidden');
+            
+            const buttons = optionsContainer.querySelectorAll('button');
+            buttons.forEach(btn => btn.disabled = true);
+
+            showFeedback(selectedIndex);
+        }
+
+        function showFeedback(selectedIndex) {
+            const data = quizData[currentQuestion];
+            const buttons = optionsContainer.querySelectorAll('button');
+            const isCorrect = selectedIndex === data.correct;
+
+            feedbackArea.className = "mt-6 p-4 rounded-lg border";
+
+            if (isCorrect) {
+                buttons[selectedIndex].className = "option-btn w-full text-left p-4 rounded-xl border-2 border-green-500 bg-green-50 dark:bg-green-950/40 font-medium text-green-800 dark:text-green-300 shadow-sm";
+                feedbackTitle.innerText = "✅ Tepat Sekali!";
+                feedbackTitle.className = "font-bold text-lg mb-2 text-green-700 dark:text-green-400";
+                feedbackArea.classList.add('bg-green-50', 'dark:bg-green-950/20', 'border-green-200', 'dark:border-green-900/60');
+            } else {
+                buttons[selectedIndex].className = "option-btn w-full text-left p-4 rounded-xl border-2 border-red-500 bg-red-50 dark:bg-red-950/40 font-medium text-red-800 dark:text-red-300 shadow-sm";
+                buttons[data.correct].className = "option-btn w-full text-left p-4 rounded-xl border-2 border-green-500 bg-green-50 dark:bg-green-950/40 font-medium text-green-800 dark:text-green-300 shadow-sm";
+                feedbackTitle.innerText = "❌ Kurang Tepat";
+                feedbackTitle.className = "font-bold text-lg mb-2 text-red-700 dark:text-red-400";
+                feedbackArea.classList.add('bg-red-50', 'dark:bg-red-950/20', 'border-red-200', 'dark:border-red-900/60');
+            }
+
+            if (currentQuestion === quizData.length - 1) {
+                nextBtn.innerText = "Lihat Hasil Akhir 🏁";
+                nextBtn.className = "w-full bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700 transition shadow-md";
+            } else {
+                nextBtn.innerText = "Soal Berikutnya →";
+                nextBtn.className = "w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition shadow-md";
+            }
+
+            explanationText.innerHTML = `<strong>Penjelasan:</strong><br>${data.explanation}`;
+            feedbackArea.classList.remove('hidden');
+            
+            setTimeout(() => {
+                 feedbackArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 50);
+        }
+
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion();
+            }
+        });
+
+        skipBtn.addEventListener('click', () => {
+            if (currentQuestion < quizData.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentQuestion < quizData.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        });
+
+        function showResult() {
+            questionArea.classList.add('hidden');
+            resultArea.classList.remove('hidden');
+            progressFill.style.width = '100%';
+
+            let finalScoreCount = 0;
+            let unanweredCount = 0;
+
+            userAnswers.forEach((ans, idx) => {
+                if (ans === quizData[idx].correct) finalScoreCount++;
+                if (ans === null) unanweredCount++;
+            });
+
+            finalScore.innerText = finalScoreCount;
+
+            if (unanweredCount > 0) {
+                skippedInfo.innerText = `*Ada ${unanweredCount} soal yang Anda lewati/belum dijawab.`;
+                skippedInfo.classList.remove('hidden');
+            } else {
+                skippedInfo.classList.add('hidden');
+            }
+            
+            if(finalScoreCount === quizData.length) {
+                resultMessage.innerText = "MANTAP! 🎉 Skor Sempurna! Kosakata sinonim N3 Anda sudah sangat matang.";
+            } else if (finalScoreCount >= 28) {
+                resultMessage.innerText = "Luar biasa! Tingkat akurasi Anda sangat tinggi. Siap tempur untuk JLPT!";
+            } else if (finalScoreCount >= 18) {
+                resultMessage.innerText = "Kerja bagus. Sudah lulus passing grade latihan, tapi yuk tinjau lagi soal yang salah agar lebih aman.";
+            } else {
+                resultMessage.innerText = "Jangan berkecil hati. Manfaatkan fitur tombol 'Sebelumnya' tadi untuk mengulang materi yang terlewat.";
+            }
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>

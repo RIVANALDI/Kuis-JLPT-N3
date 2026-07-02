@@ -157,12 +157,10 @@
             if (document.documentElement.classList.contains('dark')) {
                 document.documentElement.classList.remove('dark');
                 themeToggleIcon.innerText = "🌙";
-                themeToggleText.innerText = "Mode Gelap";
                 localStorage.setItem('theme', 'light');
             } else {
                 document.documentElement.classList.add('dark');
                 themeToggleIcon.innerText = "☀️";
-                themeToggleText.innerText = "Mode Terang";
                 localStorage.setItem('theme', 'dark');
             }
         });
@@ -171,7 +169,6 @@
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
             themeToggleIcon.innerText = "☀️";
-            themeToggleText.innerText = "Mode Terang";
         }
 
         function loadQuestion() {
